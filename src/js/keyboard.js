@@ -1,6 +1,7 @@
 export class Keyboard {
   // #(hash)로 선언한 변수는 private 변수가 되어서 class 외부 혹은 export 하는 곳에서 임의로 변경이 불가능해짐
   #switchEl;
+  #fontSelectEl;
   constructor() {
     this.#assginElement();
     this.#addEvent();
@@ -8,6 +9,7 @@ export class Keyboard {
 
   #assginElement() {
     this.#switchEl = document.getElementById("switch");
+    this.#fontSelectEl = document.getElementById("font");
   }
 
   #addEvent() {
@@ -17,6 +19,10 @@ export class Keyboard {
         "theme",
         e.target.checked ? "dark-mode" : ""
       );
+    });
+    this.#fontSelectEl.addEventListener("change", (e) => {
+      console.log(e.target);
+      document.body.style.fontFamily = e.target.value;
     });
   }
 }
