@@ -6,6 +6,8 @@ export class Keyboard {
   #keyboardEl;
   #inputGroupEl;
   #inputEl;
+  #keyPress = false;
+  #mouseDown = false;
   constructor() {
     this.#assginElement();
     this.#addEvent();
@@ -26,6 +28,8 @@ export class Keyboard {
     this.#switchEl.addEventListener("change", this.#onChangeTheme);
     this.#fontSelectEl.addEventListener("change", this.#onChangeFont);
     document.addEventListener("keydown", (e) => {
+      if (this.#mouseDown) return;
+      this.#keyPress = true;
       console.log(e.code);
       // 정규식을 사용하여 한글 입력을 방지
       // 만약 입력이 어떤 식으로든 한글이면 toggle에 넣어준 두번째 인자는 true가 나옴, 그러면 error 클래스명이 빠지는 구조
@@ -43,6 +47,8 @@ export class Keyboard {
         ?.classList.add("active");
     });
     document.addEventListener("keyup", (e) => {
+      if (this.#mouseDown) return;
+      this.#keyPress = false;
       console.log(e.code);
       this.#keyboardEl
         .querySelector(`[data-code=${e.code}]`)
@@ -64,6 +70,8 @@ export class Keyboard {
   }
 
   #onMouseDown(e) {
+    if (this.#keyPress) return;
+    this.#mouseDown = true;
     // closest는 가장 가까운 부모 요소부터 인자에 해당하는 DOM 엘리먼트를 찾는 메서드
     e.target.closest("div.key").classList.add("active");
   }
@@ -72,6 +80,8 @@ export class Keyboard {
   //그래서 mouseUp에 해당하는 함수는 이벤트 객체가 아니라 keyboardEl에서 active 클래스명을 가진 애를 찾도록 함
   //따라서 위 addEvent에서 mouseup에 해당하는 부분을 보면 keyboardEl이 아니라 document 전체에 이벤트 리스너를 걸어준거
   #onMouseUp(e) {
+    if (this.#keyPress) return;
+    this.#mouseDown = false;
     const keyEl = e.target.closest("div.key");
     // 느낌표 두 개 붙인건 확실하게 boolean 값으로 바꿀려고 그런거
     const isActive = !!keyEl?.classList.contains("active");
